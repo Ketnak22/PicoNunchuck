@@ -5,7 +5,6 @@ cmake_install.cmake
 Makefile
 compile_commands.json
 
-
 # Binary files
 *.bin
 *.elf
@@ -20,5 +19,5 @@ pico_sdk_import.cmake
 # VS Code
 .vscode
 
-# Compilde
+# Generated
 generated
