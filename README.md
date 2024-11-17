@@ -1,4 +1,4 @@
-# Pico-Nunchuck
+# PicoNunchuck
 This project demonstrates how to interface with a Nintendo Wii Nunchuck using the I2C protocol on a Raspberry Pi Pico. Though I'm still learning so it's not the best. This work is heavily inspired by [Infusion's Nunchuk Fritzing project](https://github.com/infusion/Fritzing/tree/master/Nunchuk).
 
 ## Features
