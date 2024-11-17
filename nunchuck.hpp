@@ -5,25 +5,26 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 
-#define NUNCHUK_ADDRESS 0x52
-
+// I2C defines
 #define I2C_PORT i2c0
 #define I2C_SDA 4
 #define I2C_SCL 5
 
+// I2C address of Nunchuck
+#define NUNCHUK_ADDRESS 0x52
+
+// Calibration accelerometer values
+#define ACCEL_X_ZERO 512
+#define ACCEL_Y_ZERO 512
+#define ACCEL_Z_ZERO 512
+
+// Calibration joystick values
+#define JOYSTICK_X_ZERO 127
+#define JOYSTICK_Y_ZERO 128
+
 class Nunchuck
 {
 private:
-    // Calibration accelerometer values, depends on your Nunchuk
-    int ACCEL_X_ZERO = 512;
-    int ACCEL_Y_ZERO = 512;
-    int ACCEL_Z_ZERO = 512;
-
-    // Calibration joystick values
-    int JOYSTICK_X_ZERO = 127;
-    int JOYSTICK_Y_ZERO = 128;
-
-
     std::array<uint8_t, 6> data;
 
     // Read identifaction number of device
@@ -47,6 +48,7 @@ private:
         auto ident = read_ident();
         return ident[0] == 0xA4 && ident[1] == 0x20 && ident[2] == 0x00 && ident[3] == 0x00;
     }
+
 public:
     // Initialize the Nunchuck without encryption
     void init()
@@ -63,8 +65,15 @@ public:
                 printf("Cannot initialize device - check the wiring!\n");
             }
         }
+
         sleep_ms(5);
-        i2c_write_blocking(I2C_PORT, NUNCHUK_ADDRESS, reg2, 2, false);
+
+        if (i2c_write_blocking(I2C_PORT, NUNCHUK_ADDRESS, reg2, 2, false) < 0) {
+            while (true) 
+            {
+                printf("Cannot initialize device - check the wiring!\n");
+            }
+        }
 
         if (this->isNunchuck())
         {
@@ -171,7 +180,7 @@ public:
         return (int16_t)this->accelZ_raw() - (int16_t)ACCEL_Z_ZERO;
     }
 
-    // Print all values 
+    // Prints the current accelerometer values, joystick positions, and button states of the Nunchuk
     void print() {
         printf("Accel X:%d Y:%d Z:%d  Joystick X:%d Y:%d  Button C:%d  Button Z:%d\n", this->accelX(), this->accelY(), this->accelZ(), this->joystickX(), this->joystickY(), this->buttonC(), this->buttonZ());
     }
