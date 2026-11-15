@@ -27,28 +27,6 @@ class Nunchuck
 private:
     std::array<uint8_t, 6> data;
 
-    // Read identifaction number of device
-    std::array<uint8_t, 4> read_ident()
-    {
-        uint8_t reg = 0xFA;
-        uint8_t buf[6];
-
-        i2c_write_blocking(I2C_PORT, NUNCHUK_ADDRESS, &reg, 1, false);
-        sleep_ms(5);
-        i2c_read_blocking(I2C_PORT, NUNCHUK_ADDRESS, buf, 6, false);
-
-        std::array<uint8_t, 4> ident = {buf[2], buf[3], buf[4], buf[5]};
-
-        return ident;
-    }
-
-    // Check if identifaction number is the one of Nunchuck
-    bool isNunchuck()
-    {
-        auto ident = read_ident();
-        return ident[0] == 0xA4 && ident[1] == 0x20 && ident[2] == 0x00 && ident[3] == 0x00;
-    }
-
 public:
     // Initialize the Nunchuck without encryption
     void init()
@@ -72,14 +50,6 @@ public:
             while (true) 
             {
                 printf("Cannot initialize device - check the wiring!\n");
-            }
-        }
-
-        if (this->isNunchuck())
-        {
-            while (true)
-            {
-                printf("This device is not the Nunchuck!\n");
             }
         }
     }
@@ -135,7 +105,7 @@ public:
     // Retrieves the calibrated X-value of the joystick
     int16_t joystickX()
     {
-        return (int16_t)this->joystickY_raw() - (int16_t)JOYSTICK_X_ZERO;
+        return (int16_t)this->joystickX_raw() - (int16_t)JOYSTICK_X_ZERO;
     }
 
     // Retrieves the calibrated Y-value of the joystick

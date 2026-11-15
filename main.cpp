@@ -13,7 +13,7 @@ int main()
 {
     stdio_init_all();
 
-    // I2C Initialisation. Using it at 400Khz.
+    // I2C Initialisation. Using it at 100Khz.
     i2c_init(I2C_PORT, 100 * 1000);
 
     gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
