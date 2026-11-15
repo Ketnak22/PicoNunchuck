@@ -14,7 +14,7 @@ The code is heavily inspired by [Infusion's Nunchuk Fritzing project](https://gi
 
 ![Serial output while moving the stick and pressing the buttons](docs/serial.gif)
 
-About ten times a second the program prints one line with:
+The program keeps printing lines with:
 
 - the accelerometer X, Y and Z values. They're 10-bit readings with 512 subtracted.
 - the stick X and Y position, with the centre (127 and 128) subtracted.
