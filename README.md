@@ -40,15 +40,26 @@ The program uses `i2c0` at 100 kHz, and the Nunchuck is at address `0x52`. It tu
 The Nunchuck runs on 3.3 V only. Don't connect its power pin to 5 V (VBUS or VSYS), because that will damage the Nunchuck.
 
 ## Building and flashing
-To build from the command line you need the Pico SDK and the ARM toolchain, with `PICO_SDK_PATH` set. `pico_sdk_import.cmake` isn't in the repo, so copy it from the SDK first:
+
+The easiest way is the Raspberry Pi Pico extension for VS Code. The project is set up for it (Pico SDK 2.0.0, ARM toolchain 13.2.Rel1), and it downloads everything it needs by itself.
+
+To build from the command line you need:
+
+- the [Pico SDK](https://github.com/raspberrypi/pico-sdk) 2.0.0 with its submodules (`git submodule update --init`), because USB serial needs TinyUSB from `lib/tinyusb`. Set `PICO_SDK_PATH` to it.
+- the [ARM GNU toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads) (`arm-none-eabi-gcc`) on your `PATH`.
+- CMake and a build tool such as Ninja or Make.
+- Python 3, which the SDK uses during the build.
+- [picotool](https://github.com/raspberrypi/pico-sdk-tools/releases) 2.0.0, which SDK 2.0 uses to make the `.uf2` file. If CMake can't find it, it tries to download and build picotool from source, which needs a native C++ compiler. With a prebuilt one, point CMake at it with `-Dpicotool_DIR=<folder with picotoolConfig.cmake>`.
+
+`pico_sdk_import.cmake` isn't in the repo, so copy it from the SDK first:
 
 ```
 cp $PICO_SDK_PATH/external/pico_sdk_import.cmake .
-mkdir build
-cd build
-cmake ..
-make
+cmake -S . -B build -G Ninja
+cmake --build build
 ```
+
+On Windows, use `-G Ninja` (or `-G "MinGW Makefiles"`), because otherwise CMake picks a Visual Studio generator, which can't use the ARM toolchain.
 
 To flash, hold the BOOTSEL button on the Pico while plugging in USB. A drive called `RPI-RP2` appears. Copy `build/pico-nunchuck.uf2` to that drive.
 
